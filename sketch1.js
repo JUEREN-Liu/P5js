@@ -28,10 +28,10 @@ function draw() {
         let noiseLevel = height / 4;
 
         for(let i = 0; i < width; i++){
-            nx = noise(i* 0.005 + frameCount * 0.001 + 99) * noiseLevel + areaY;
-            nx1 = noise(i* 0.0075 + frameCount * 0.005 + 9) * noiseLevel + areaY1;
-            nx2 = (noise(i* 0.02 + frameCount * 0.05)-0.2) * 1.3 * noiseLevel + areaY2;
-
+            nx = noise((i + frameCount + 999) * 0.004) * noiseLevel + areaY;
+            nx1 = noise((i + frameCount * 1.3 + 9999) * 0.0075) * noiseLevel + areaY1;
+            nx2 = (noise((i + frameCount * 4) * 0.017)-0.2) * 1.3 * noiseLevel + areaY2;
+            
             for(let j = 0; j <= height; j++){
                 if(j > nx2){
                     stroke(sq((j-areaY2)/(height-areaY2))*50 + 40);
