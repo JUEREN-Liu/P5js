@@ -11,3 +11,6 @@ sketch.js preview
 
 sketch1.js preview  
 ![06](/Screenshot/Texture07.jpg)
+
+ChernoffJace.js preview
+![07](/Screenshot/ChernoffFace.jpg)

@@ -6,6 +6,10 @@
     Texture01();
     }
 
+    function draw(){
+        //print(randomGaussian(0.5, 0.1));
+    }
+
     function Mask(){
         rect(20,20, width-40 , height-40);
     }
@@ -17,9 +21,84 @@
     function Texture01(){
         background(255);
         //clip(Mask);
-        faceData = new FaceData(300, 300, 500);
-        face1 = new Face(faceData);
-        face1.DrawFace();
+        size = 300;
+        row = floor(width / size);
+        column = floor(height / size);
+
+        for(let i=0; i < column; i++){
+            for(let j = 0; j < row; j++){
+                faceData = new FaceData(size * j + size / 2, size * i + size / 2, size);
+                face1 = new Face(faceData).DrawFace();
+            }
+        }
+    }
+
+    class FaceData{
+        x = 0;
+        y = 0;
+        w = 0;
+        faceWidth = 0.7;
+        faceHeight = 0.9;
+        faceCenterY = 0.12;
+
+        eye_inSide_Para = 0.5;
+        eye_tPoint_Para = 0.5;
+        eye_tPoint1_Para = 0.0;
+        eye_outSide_Para = 0.5;
+        eye_bPoint_Para = 0.3;
+        eye_bPoint1_Para = 0.5;
+
+        eye_inSide_CP1 = 0.4;
+        eye_inSide_CP2 = 0.5;
+        eye_tPoint_CP1 = 0.6;
+        eye_tPoint_CP2 = 0.5;
+        eye_tPoint1_CP1 = 0.5;
+        eye_tPoint1_CP2 = 0.0;
+        eye_outSide_CP1 = 0.9;
+        eye_outSide_CP2 = 0.0;
+        eye_bPoint_CP1 = 0.5;
+        eye_bPoint_CP2 = 0.5;
+        eye_bPoint1_CP1 = 0.4;
+        eye_bPoint1_CP2 = 0.5;
+
+        pupil_CPX = 0.6;
+        pupil_CPY = 0.6;
+        pupilXoffset = 0.37;
+        pupilYoffset = 0.48;
+        pupilW = 0.24;
+        pupilH = 1.1;
+
+        constructor(x, y, w){
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.eye_inSide_Para = constrain(randomGaussian(this.eye_inSide_Para, 0.2), 0 , 1);
+            this.eye_tPoint_Para = constrain(randomGaussian(this.eye_tPoint_Para, 0.1), 0 , 1);
+            this.eye_tPoint1_Para = constrain(randomGaussian(this.eye_tPoint1_Para, 0.1), 0 , 1);
+            this.eye_outSide_Para = constrain(randomGaussian(this.eye_outSide_Para, 0.2), 0 , 1);
+            this.eye_bPoint_Para = constrain(randomGaussian(this.eye_bPoint_Para, 0.1), 0 , 1);
+            this.eye_bPoint1_Para = constrain(randomGaussian(this.eye_bPoint1_Para, 0.1), 0 , 1);
+            
+            this.eye_inSide_CP1 = constrain(randomGaussian(this.eye_inSide_CP1, 0.1), 0 , 1);
+            this.eye_inSide_CP2 = constrain(randomGaussian(this.eye_inSide_CP2, 0.1), 0 , 1);
+            this.eye_tPoint_CP1 = constrain(randomGaussian(this.eye_tPoint_CP1, 0.1), 0 , 1);
+            this.eye_tPoint_CP2 = constrain(randomGaussian(this.eye_tPoint_CP2, 0.1), 0 , 1);
+            this.eye_tPoint1_CP1 = constrain(randomGaussian(this.eye_tPoint1_CP1, 0.1), 0 , 1);
+            this.eye_tPoint1_CP2 = constrain(randomGaussian(this.eye_tPoint1_CP2, 0.1), 0 , 1);
+            this.eye_outSide_CP1 = constrain(randomGaussian(this.eye_outSide_CP1, 0.1), 0 , 1);
+            this.eye_outSide_CP2 = constrain(randomGaussian(this.eye_outSide_CP2, 0.1), 0 , 1);
+            this.eye_bPoint_CP1 = constrain(randomGaussian(this.eye_bPoint_CP1, 0.1), 0 , 1);
+            this.eye_bPoint_CP2 = constrain(randomGaussian(this.eye_bPoint_CP2, 0.1), 0 , 1);
+            this.eye_bPoint1_CP1 = constrain(randomGaussian(this.eye_bPoint1_CP1, 0.1), 0 , 1);
+            this.eye_bPoint1_CP2 = constrain(randomGaussian(this.eye_bPoint1_CP2, 0.1), 0 , 1);
+
+            this.pupil_CPX = constrain(randomGaussian(this.pupil_CPX, 0.1), 0 , 1);
+            this.pupil_CPY = constrain(randomGaussian(this.pupil_CPY, 0.1), 0 , 1);
+            this.pupilXoffset = constrain(randomGaussian(this.pupilXoffset, 0.05), 0 , 1);
+            this.pupilYoffset = constrain(randomGaussian(this.pupilYoffset, 0.05), 0 , 1);
+            this.pupilW = constrain(randomGaussian(this.pupilW, 0.05), 0 , 1);
+            this.pupilH = constrain(randomGaussian(this.pupilH, 0.05), 0 , 1);
+        }
     }
 
     class Face{
@@ -42,8 +121,8 @@
 
         DrawFace(){
             stroke(255, 0, 0);
-            line(0, height/2, width, height/2);
-            line(width /2, 0, width/2, height);
+            //line(0, height/2, width, height/2);
+            //line(width /2, 0, width/2, height);
             stroke(0);
             let faceBoundR = this.x+this.faceWidth/2;
             let faceBoundL = this.x-this.faceWidth/2;
@@ -106,12 +185,12 @@
         DrawEyeType1(x, y, s){
             let height = this.faceHeight / 8;
             let width = this.faceWidth / 3.5;
-            let inSide = lerp(y + height / 2, y - height / 2, 0.8);
-            let tPoint = lerp(s/2, s/2 + width, 0.5);
-            let tPoint1 = lerp(tPoint, s/2 + width, 0.0);
-            let outSide = lerp(y + height / 2, y - height / 2, 0.8);
-            let bPoint = lerp(s/2, s/2 + width, 0.2);
-            let bPoint1 = lerp(bPoint, s/2 + width, 0.6);
+            let inSide = lerp(y + height / 2, y - height / 2, this.faceData.eye_inSide_Para);
+            let tPoint = lerp(s/2, s/2 + width, this.faceData.eye_tPoint_Para);
+            let tPoint1 = lerp(tPoint, s/2 + width, this.faceData.eye_tPoint1_Para);
+            let outSide = lerp(y + height / 2, y - height / 2, this.faceData.eye_outSide_Para);
+            let bPoint = lerp(s/2, s/2 + width, this.faceData.eye_bPoint_Para);
+            let bPoint1 = lerp(bPoint, s/2 + width, this.faceData.eye_bPoint1_Para);
 
             let rL = x + s/2;
             let rR = rL + width;
@@ -221,8 +300,8 @@
             fill(60, 50, 50);
             stroke(30, 30, 40);
             strokeWeight(3);
-            ellipse(lerp(rL, rR, this.faceData.pupilXoffset), lerp(bY, tY, this.faceData.pupilYoffset), pupilWidth*0.5, pupilWidth*0.5);
-            ellipse(lerp(lR, lL, this.faceData.pupilXoffset), lerp(bY, tY, this.faceData.pupilYoffset), pupilWidth*0.5, pupilWidth*0.5);
+            ellipse(lerp(rL, rR, this.faceData.pupilXoffset), lerp(bY, tY, this.faceData.pupilYoffset), pupilWidth*0.6, pupilWidth*0.6);
+            ellipse(lerp(lR, lL, this.faceData.pupilXoffset), lerp(bY, tY, this.faceData.pupilYoffset), pupilWidth*0.6, pupilWidth*0.6);
             //*/
         }
 
@@ -275,41 +354,6 @@
             stroke(0);
             strokeWeight(2);
             point(x,y);
-        }
-    }
-
-    class FaceData{
-        x = 0;
-        y = 0;
-        w = 0;
-        faceWidth = 0.7;
-        faceHeight = 0.9;
-        faceCenterY = 0.12;
-
-        eye_inSide_CP1 = 0.4;
-        eye_inSide_CP2 = 0.5;
-        eye_tPoint_CP1 = 0.6;
-        eye_tPoint_CP2 = 0.5;
-        eye_tPoint1_CP1 = 0.5;
-        eye_tPoint1_CP2 = 0.0;
-        eye_outSide_CP1 = 0.9;
-        eye_outSide_CP2 = 0.0;
-        eye_bPoint_CP1 = 0.5;
-        eye_bPoint_CP2 = 0.5;
-        eye_bPoint1_CP1 = 0.4;
-        eye_bPoint1_CP2 = 0.5;
-
-        pupil_CPX = 0.6;
-        pupil_CPY = 0.6;
-        pupilXoffset = 0.37;
-        pupilYoffset = 0.48;
-        pupilW = 0.24;
-        pupilH = 1.1;
-
-        constructor(x, y, w){
-            this.x = x;
-            this.y = y;
-            this.w = w;
         }
     }
 }
