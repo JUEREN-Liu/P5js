@@ -1,13 +1,9 @@
 {
     function setup() {
-    createCanvas(600, 600);
+    createCanvas(900, 900);
     Texture01_Setup();
 
     Texture01();
-    }
-
-    function draw(){
-        //print(randomGaussian(0.5, 0.1));
     }
 
     function Mask(){
@@ -21,7 +17,7 @@
     function Texture01(){
         background(255);
         //clip(Mask);
-        size = 300;
+        size = 150;
         row = floor(width / size);
         column = floor(height / size);
 
@@ -37,13 +33,15 @@
         x = 0;
         y = 0;
         w = 0;
-        faceWidth = 0.7;
+        faceWidth = 0.5;
         faceHeight = 0.9;
-        faceCenterY = 0.12;
+        faceCenterY = 0.5;
 
+        eye_height_Para = 0.5;
+        eye_width_Para = 0.5;
         eye_inSide_Para = 0.5;
         eye_tPoint_Para = 0.5;
-        eye_tPoint1_Para = 0.0;
+        eye_tPoint1_Para = 0.2;
         eye_outSide_Para = 0.5;
         eye_bPoint_Para = 0.3;
         eye_bPoint1_Para = 0.5;
@@ -54,7 +52,7 @@
         eye_tPoint_CP2 = 0.5;
         eye_tPoint1_CP1 = 0.5;
         eye_tPoint1_CP2 = 0.0;
-        eye_outSide_CP1 = 0.9;
+        eye_outSide_CP1 = 0.7;
         eye_outSide_CP2 = 0.0;
         eye_bPoint_CP1 = 0.5;
         eye_bPoint_CP2 = 0.5;
@@ -63,19 +61,24 @@
 
         pupil_CPX = 0.6;
         pupil_CPY = 0.6;
-        pupilXoffset = 0.37;
-        pupilYoffset = 0.48;
-        pupilW = 0.24;
-        pupilH = 1.1;
+        pupilXoffset = 0.5;
+        pupilYoffset = 0.5;
+        pupilW = 0.5;
+        pupilH = 0.5;
 
         constructor(x, y, w){
             this.x = x;
             this.y = y;
             this.w = w;
+            this.faceWidth = map(randomGaussian(this.faceWidth, 0.1), 0, 1, 0.6 , 0.8, true);
+            this.faceCenterY = map(randomGaussian(this.faceCenterY, 0.1), 0, 1, 0.11 , 0.14, true);
+            this.eye_height_Para = map(randomGaussian(this.eye_height_Para, 0.4), 0, 1, 0.06 , 0.18, true);
+            
+            this.eye_width_Para = constrain(randomGaussian(this.eye_width_Para, 0.2), 0 ,1);
             this.eye_inSide_Para = constrain(randomGaussian(this.eye_inSide_Para, 0.2), 0 , 1);
-            this.eye_tPoint_Para = constrain(randomGaussian(this.eye_tPoint_Para, 0.1), 0 , 1);
-            this.eye_tPoint1_Para = constrain(randomGaussian(this.eye_tPoint1_Para, 0.1), 0 , 1);
-            this.eye_outSide_Para = constrain(randomGaussian(this.eye_outSide_Para, 0.2), 0 , 1);
+            this.eye_outSide_Para = constrain(randomGaussian(this.eye_outSide_Para, 0.2), pow(this.eye_width_Para, 2) * 0.2 , 1);
+            this.eye_tPoint_Para = constrain(randomGaussian(this.eye_tPoint_Para, 0.2), (1-this.eye_inSide_Para) * 0.3 , 1);
+            this.eye_tPoint1_Para = constrain(randomGaussian(this.eye_tPoint1_Para, 0.1), 0 , (1-this.eye_outSide_Para));
             this.eye_bPoint_Para = constrain(randomGaussian(this.eye_bPoint_Para, 0.1), 0 , 1);
             this.eye_bPoint1_Para = constrain(randomGaussian(this.eye_bPoint1_Para, 0.1), 0 , 1);
             
@@ -92,12 +95,13 @@
             this.eye_bPoint1_CP1 = constrain(randomGaussian(this.eye_bPoint1_CP1, 0.1), 0 , 1);
             this.eye_bPoint1_CP2 = constrain(randomGaussian(this.eye_bPoint1_CP2, 0.1), 0 , 1);
 
-            this.pupil_CPX = constrain(randomGaussian(this.pupil_CPX, 0.1), 0 , 1);
+            this.pupil_CPX = constrain(randomGaussian(this.pupil_CPX, 0.05), 0 , 1);
             this.pupil_CPY = constrain(randomGaussian(this.pupil_CPY, 0.1), 0 , 1);
-            this.pupilXoffset = constrain(randomGaussian(this.pupilXoffset, 0.05), 0 , 1);
-            this.pupilYoffset = constrain(randomGaussian(this.pupilYoffset, 0.05), 0 , 1);
-            this.pupilW = constrain(randomGaussian(this.pupilW, 0.05), 0 , 1);
-            this.pupilH = constrain(randomGaussian(this.pupilH, 0.05), 0 , 1);
+            this.pupilXoffset = map(randomGaussian(this.pupilXoffset, 0.4), 0 , 1, 0.35, 0.45,true);
+            this.pupilYoffset = map(randomGaussian(this.pupilYoffset, 0.4), 0 , 1, 0.45, 0.65, true);
+            this.pupilW = map(randomGaussian(this.pupilW, 0.3), 0 , 1, 0.2 , 0.3, true);
+            this.pupilH = map(randomGaussian(this.pupilH, 0.3), 0 , 1, 0.05, 0.09, true);
+            this.eye_width_Para = map(this.eye_width_Para, 0 ,1 , 0.2 , 0.3, true);
         }
     }
 
@@ -121,8 +125,6 @@
 
         DrawFace(){
             stroke(255, 0, 0);
-            //line(0, height/2, width, height/2);
-            //line(width /2, 0, width/2, height);
             stroke(0);
             let faceBoundR = this.x+this.faceWidth/2;
             let faceBoundL = this.x-this.faceWidth/2;
@@ -134,9 +136,12 @@
             let faceMostWidthPointY = min(EyebrowY, this.centerY - noseYoffest);
             let EyebrowOutPointXoffest = this.faceWidth/9 * 4;
             let EyeOutPointXofset = this.faceWidth/8*3;
-            //quad(faceBoundR, faceBoundT, faceBoundL, faceBoundT, faceBoundL, faceBoundB, faceBoundR, faceBoundB);
             push();
             fill(255, 237, 229);
+            let mandibleAngleXoffset = this.faceWidth / 8 * 2.4;//下顎骨
+            let earX = curvePoint(faceBoundR, faceBoundR, this.x + mandibleAngleXoffset, this.x, 0.5);
+            let earX1 = curvePoint(faceBoundR, earX, this.x + mandibleAngleXoffset, this.x, 0.5);
+            this.DrawEars(earX - this.x, earX1 - this.x, this.centerY, this.centerY + noseYoffest);
 
             beginShape();
             vertex(faceBoundL, faceMostWidthPointY);
@@ -149,7 +154,7 @@
             beginShape();
             this.DrawTestCurveVertex(faceBoundR, faceBoundT);
             this.DrawTestCurveVertex(faceBoundR, faceMostWidthPointY);
-            let mandibleAngleXoffset = this.faceWidth / 8 * 2.4;//下顎骨
+            
             //this.DrawTestCurveVertex(lerp(faceBoundR, this.x + mandibleAngleXoffset, 0.2), this.centerY + noseYoffest*0.5);
             this.DrawTestCurveVertex(this.x + mandibleAngleXoffset, this.centerY + mouseYoffest*0.99);
             this.DrawTestCurveVertex(this.x , this.y + this.faceHeight /2);
@@ -160,12 +165,10 @@
             endShape();
             ///*
             this.DrawEyes(this.x, this.centerY, this.faceWidth/4);
-            this.DrawEyebrow(this.x, EyebrowY, this.faceWidth/4.5);
+            //this.DrawEyebrow(this.x, EyebrowY, this.faceWidth/4.5);
             this.DrawNose(this.x, this.centerY + noseYoffest);
-            this.DrawMouse(this.x, this.centerY + mouseYoffest, this.faceWidth/4);
-            let earX = curvePoint(faceBoundR, faceBoundR, this.x + mandibleAngleXoffset, this.x, 0.5);
-            let earX1 = curvePoint(faceBoundR, earX, this.x + mandibleAngleXoffset, this.x, 0.5);
-            this.DrawEars(earX - this.x, earX1 - this.x, this.centerY, this.centerY + noseYoffest);
+            //this.DrawMouse(this.x, this.centerY + mouseYoffest, this.faceWidth/4);
+            
             //*/
             pop();
             
@@ -173,7 +176,7 @@
 
         DrawTestCurveVertex(x,y){
             curveVertex(x,y);
-            this.TestPoint(x,y);
+            //this.TestPoint(x,y);
         }
 
         DrawEyes(x, y, s){
@@ -183,8 +186,8 @@
         }
 
         DrawEyeType1(x, y, s){
-            let height = this.faceHeight / 8;
-            let width = this.faceWidth / 3.5;
+            let height = this.faceHeight * this.faceData.eye_height_Para;
+            let width = this.faceWidth * this.faceData.eye_width_Para;
             let inSide = lerp(y + height / 2, y - height / 2, this.faceData.eye_inSide_Para);
             let tPoint = lerp(s/2, s/2 + width, this.faceData.eye_tPoint_Para);
             let tPoint1 = lerp(tPoint, s/2 + width, this.faceData.eye_tPoint1_Para);
@@ -199,9 +202,83 @@
             let tY = y - height / 2;
             let bY = y + height / 2;
 
+            let eyelashY = tY - height * 0.19;
+            fill(55, 50, 50);
+            stroke(40, 40, 80);
+            let eyelashOffset = width * 0.15;
             for(let i = 0; i < 2; i++){
-                //TODO
+                beginShape();
+                vertex(rL, inSide);
+                this.TestDrawBezierVertex(
+                    rL, inSide,
+                    rL, lerp(inSide, tY, this.faceData.eye_inSide_CP1),
+                    lerp(x+tPoint, rL, this.faceData.eye_tPoint_CP1), tY,
+                    x+tPoint, tY);
+                this.TestDrawBezierVertex(
+                    x+tPoint, tY,
+                    lerp(x+tPoint, x+tPoint1, this.faceData.eye_tPoint_CP2), tY,
+                    lerp(x+tPoint1, x+tPoint, this.faceData.eye_tPoint1_CP1), tY,
+                    x+tPoint1, tY);
+                this.TestDrawBezierVertex(
+                    x+tPoint1, tY,
+                    lerp(x+tPoint1, rR, this.faceData.eye_tPoint1_CP2), tY,
+                    lerp(x+tPoint1, rR, this.faceData.eye_outSide_CP1), tY,
+                    rR, outSide);
+                this.TestDrawBezierVertex(
+                    rR, outSide,
+                    rR, outSide,
+                    rR+eyelashOffset, outSide,
+                    rR+eyelashOffset, outSide);
+                endShape();
+                beginShape();
+                vertex(rR+eyelashOffset, outSide);
+                this.TestDrawBezierVertex(
+                    rR+eyelashOffset, outSide,
+                    lerp(x+tPoint1, rR, 1.2),lerp(outSide, eyelashY, 0.5),
+                    lerp(x+tPoint1, rR, 0.66), lerp(outSide, eyelashY, 1),
+                    lerp(x+tPoint1, rR, 0.1), lerp(outSide, eyelashY, 0.99));
+                this.TestDrawBezierVertex(
+                    lerp(x+tPoint1, rR, 0.1), lerp(outSide, eyelashY, 0.9),
+                    lerp(x+tPoint1, rL, 0), eyelashY,
+                    lerp(x+tPoint, x+tPoint1, 0.3), eyelashY,
+                    lerp(x+tPoint, rL, 0.1), eyelashY);
+                this.TestDrawBezierVertex(
+                    lerp(x+tPoint, rL, 0.1), eyelashY,
+                    lerp(x+tPoint, rL, 0.8), eyelashY,
+                    rL, lerp(inSide, tY, this.faceData.eye_inSide_CP1),
+                    rL, inSide);
+                endShape();
+                beginShape();
+                let bezierX = bezierPoint(rR, rR, lerp(x+bPoint1, rR, this.faceData.eye_bPoint1_CP1), x+bPoint1, 0.5);
+                let bezierY = bezierPoint(outSide, lerp(outSide, bY, this.faceData.eye_outSide_CP2), bY, bY, 0.5);
+                vertex(rR, outSide);
+                this.TestDrawBezierVertex(
+                    rR, outSide,
+                    rR,lerp(outSide, bY, this.faceData.eye_outSide_CP2),
+                    bezierX, bezierY,
+                    bezierX, bezierY);
+                this.TestDrawBezierVertex(
+                    bezierX, bezierY,
+                    bezierX, bezierY,
+                    rR+eyelashOffset, outSide,
+                    rR+eyelashOffset, outSide);
+                this.TestDrawBezierVertex(
+                    rR+eyelashOffset, outSide,
+                    rR+eyelashOffset, outSide,
+                    rR, outSide,
+                    rR, outSide);
+                endShape();
+                tPoint *= -1;
+                tPoint1 *= -1;
+                bPoint *= -1;
+                bPoint1 *= -1;
+                rL = x - s/2;
+                rR = rL - width;
+                eyelashOffset *= -1;
             }
+            rL = x + s/2;
+            rR = rL + width;
+
             //#region eyes
             beginClip();
             for(let i = 0; i < 2; i++){
@@ -262,12 +339,13 @@
             stroke(40, 40, 80);
             strokeWeight(4);
             //瞳孔
-            ///*
+            
             let pupilX = lerp(rL, rR, this.faceData.pupilXoffset);
             let pupilY = lerp(bY, tY, this.faceData.pupilYoffset);
-            let pupilT = pupilY - this.faceData.pupilH * height /2;
-            let pupilB = pupilY + this.faceData.pupilH * height /2;
+            let pupilT = pupilY - this.faceData.pupilH * this.faceHeight;
+            let pupilB = pupilY + this.faceData.pupilH * this.faceHeight;
             let pupilWidth = this.faceData.pupilW * width;
+            
             for(let i = 0; i < 2; i++){
                 beginShape();
                 vertex(pupilX, pupilT);
@@ -295,6 +373,7 @@
                 pupilX = lerp(lR, lL, this.faceData.pupilXoffset);
                 pupilWidth *= -1;
             }
+            
             pupilX = lerp(rL, rR, this.faceData.pupilXoffset);
 
             fill(60, 50, 50);
@@ -302,7 +381,6 @@
             strokeWeight(3);
             ellipse(lerp(rL, rR, this.faceData.pupilXoffset), lerp(bY, tY, this.faceData.pupilYoffset), pupilWidth*0.6, pupilWidth*0.6);
             ellipse(lerp(lR, lL, this.faceData.pupilXoffset), lerp(bY, tY, this.faceData.pupilYoffset), pupilWidth*0.6, pupilWidth*0.6);
-            //*/
         }
 
         TestDrawBezierVertex(x1, y1, x2, y2, x3, y3, x4, y4){
