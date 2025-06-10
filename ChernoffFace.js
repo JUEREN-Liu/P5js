@@ -41,7 +41,7 @@
         eye_width_Para = 0.5;
         eye_inSide_Para = 0.5;
         eye_tPoint_Para = 0.5;
-        eye_tPoint1_Para = 0.2;
+        eye_tPoint1_Para = 0.3;
         eye_outSide_Para = 0.5;
         eye_bPoint_Para = 0.3;
         eye_bPoint1_Para = 0.5;
@@ -58,6 +58,7 @@
         eye_bPoint_CP2 = 0.5;
         eye_bPoint1_CP1 = 0.4;
         eye_bPoint1_CP2 = 0.5;
+        eyelash_height = 0.5;
 
         pupil_CPX = 0.6;
         pupil_CPY = 0.6;
@@ -65,6 +66,11 @@
         pupilYoffset = 0.5;
         pupilW = 0.5;
         pupilH = 0.5;
+
+        earX = 0.5;
+        earY = 0.5;
+
+        noseY = 0.5;
 
         constructor(x, y, w){
             this.x = x;
@@ -94,6 +100,8 @@
             this.eye_bPoint_CP2 = constrain(randomGaussian(this.eye_bPoint_CP2, 0.1), 0 , 1);
             this.eye_bPoint1_CP1 = constrain(randomGaussian(this.eye_bPoint1_CP1, 0.1), 0 , 1);
             this.eye_bPoint1_CP2 = constrain(randomGaussian(this.eye_bPoint1_CP2, 0.1), 0 , 1);
+            
+            this.eyelash_height = map(randomGaussian(this.eyelash_height, 0.3), 0 , 1, 0.02, 0.045, true);
 
             this.pupil_CPX = constrain(randomGaussian(this.pupil_CPX, 0.05), 0 , 1);
             this.pupil_CPY = constrain(randomGaussian(this.pupil_CPY, 0.1), 0 , 1);
@@ -102,6 +110,10 @@
             this.pupilW = map(randomGaussian(this.pupilW, 0.3), 0 , 1, 0.2 , 0.3, true);
             this.pupilH = map(randomGaussian(this.pupilH, 0.3), 0 , 1, 0.05, 0.09, true);
             this.eye_width_Para = map(this.eye_width_Para, 0 ,1 , 0.2 , 0.3, true);
+
+            this.earX = map(randomGaussian(this.earX, 0.25), 0 ,1 , 0.11 , 0.14, true);
+            this.earY = map(randomGaussian(this.earY, 0.25), 0 ,1 , 0.03 , 0.06, true);
+            this.noseY = map(randomGaussian(this.noseY, 0.25), 0 ,1 , 0 , 0.05, true);
         }
     }
 
@@ -140,8 +152,8 @@
             fill(255, 237, 229);
             let mandibleAngleXoffset = this.faceWidth / 8 * 2.4;//下顎骨
             let earX = curvePoint(faceBoundR, faceBoundR, this.x + mandibleAngleXoffset, this.x, 0.5);
-            let earX1 = curvePoint(faceBoundR, earX, this.x + mandibleAngleXoffset, this.x, 0.5);
-            this.DrawEars(earX - this.x, earX1 - this.x, this.centerY, this.centerY + noseYoffest);
+            let earX1 = curvePoint(faceBoundR, earX, this.x + mandibleAngleXoffset, this.x, 0.75);
+            this.DrawEars(earX - this.x, earX1 - this.x, this.centerY, this.centerY + (mouseYoffest + noseYoffest)/2);
 
             beginShape();
             vertex(faceBoundL, faceMostWidthPointY);
@@ -202,7 +214,7 @@
             let tY = y - height / 2;
             let bY = y + height / 2;
 
-            let eyelashY = tY - height * 0.19;
+            let eyelashY = tY - this.faceHeight * this.faceData.eyelash_height;
             fill(55, 50, 50);
             stroke(40, 40, 80);
             let eyelashOffset = width * 0.15;
@@ -413,7 +425,9 @@
         }
 
         DrawNose(x, y){
-            this.TestPoint(x, y);
+            stroke(90, 50, 50);
+            strokeWeight(2.5);
+            point(x,y+this.faceHeight*this.faceData.noseY);
         }
 
         DrawMouse(x, y, s){
@@ -421,11 +435,23 @@
             this.TestPoint(x - s/2, y + 0);
         }
 
-        DrawEars(x1, x2, y, y1){
-            this.TestPoint(this.x + x1, y + 0);
-            this.TestPoint(this.x + x2, y1 + 0);
-            this.TestPoint(this.x - x1, y + 0);
-            this.TestPoint(this.x - x2, y1 + 0);
+        DrawEars(x1, x2, y1, y2){
+            fill(255, 237, 229);
+            for(let i =0; i < 2; i++){
+                beginShape();
+                curveTightness(0.0);
+                this.DrawTestCurveVertex(this.x + x1, y1-this.faceHeight*0.02);
+                this.DrawTestCurveVertex(this.x + x1, y1-this.faceHeight*0.02);
+                this.DrawTestCurveVertex(this.x + x1*1.21, y1-this.faceHeight*this.faceData.earY);
+                this.DrawTestCurveVertex(this.x + x1*1.25, y1+this.faceHeight*0.03);
+                this.DrawTestCurveVertex(this.x + x1*1.1, y1+this.faceHeight*this.faceData.earX);
+                this.DrawTestCurveVertex(this.x + x2, y2);
+                this.DrawTestCurveVertex(this.x + x2, y2);
+                this.DrawTestCurveVertex(this.x + x2, y2);
+                x1*=-1;
+                x2*=-1;
+                endShape();
+            }
         }
 
         TestPoint(x, y){
