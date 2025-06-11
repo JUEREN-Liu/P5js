@@ -67,39 +67,48 @@
         pupilW = 0.5;
         pupilH = 0.5;
 
+        eyebrow_W = 0.5;
+        eyebrow_outSide = 0.5;
+        eyebrow_inSide = 0.5;
+        eyebrow_Ymax = 0.15;
+        eyebrow_Ymin = 0.01;
+
         earX = 0.5;
         earY = 0.5;
 
         noseY = 0.5;
+
+        mouseY = 0.5;
+        mouseW = 0.5;
 
         constructor(x, y, w){
             this.x = x;
             this.y = y;
             this.w = w;
             this.faceWidth = map(randomGaussian(this.faceWidth, 0.1), 0, 1, 0.6 , 0.8, true);
-            this.faceCenterY = map(randomGaussian(this.faceCenterY, 0.1), 0, 1, 0.11 , 0.14, true);
+            this.faceCenterY = map(randomGaussian(this.faceCenterY, 0.25), 0, 1, 0.11 , 0.14, true);
             this.eye_height_Para = map(randomGaussian(this.eye_height_Para, 0.4), 0, 1, 0.06 , 0.18, true);
             
             this.eye_width_Para = constrain(randomGaussian(this.eye_width_Para, 0.2), 0 ,1);
             this.eye_inSide_Para = constrain(randomGaussian(this.eye_inSide_Para, 0.2), 0 , 1);
             this.eye_outSide_Para = constrain(randomGaussian(this.eye_outSide_Para, 0.2), pow(this.eye_width_Para, 2) * 0.2 , 1);
-            this.eye_tPoint_Para = constrain(randomGaussian(this.eye_tPoint_Para, 0.2), (1-this.eye_inSide_Para) * 0.3 , 1);
-            this.eye_tPoint1_Para = constrain(randomGaussian(this.eye_tPoint1_Para, 0.1), 0 , (1-this.eye_outSide_Para));
-            this.eye_bPoint_Para = constrain(randomGaussian(this.eye_bPoint_Para, 0.1), 0 , 1);
+            this.eye_tPoint_Para = constrain(randomGaussian(this.eye_tPoint_Para, 0.2), (1-this.eye_inSide_Para) * 0.3 , 1-(1-this.eye_outSide_Para)* 0.4);//1);
+            this.eye_tPoint1_Para = constrain(randomGaussian(this.eye_tPoint1_Para, 0.25), 0 , 1-(1-this.eye_outSide_Para)* 0.7);
+            this.eye_bPoint_Para = constrain(randomGaussian(this.eye_bPoint_Para, 0.25), 0 , 1);
             this.eye_bPoint1_Para = constrain(randomGaussian(this.eye_bPoint1_Para, 0.1), 0 , 1);
             
-            this.eye_inSide_CP1 = constrain(randomGaussian(this.eye_inSide_CP1, 0.1), 0 , 1);
+            this.eye_inSide_CP1 = constrain(randomGaussian(this.eye_inSide_CP1, 0.25), 0 , 1);
             this.eye_inSide_CP2 = constrain(randomGaussian(this.eye_inSide_CP2, 0.1), 0 , 1);
-            this.eye_tPoint_CP1 = constrain(randomGaussian(this.eye_tPoint_CP1, 0.1), 0 , 1);
-            this.eye_tPoint_CP2 = constrain(randomGaussian(this.eye_tPoint_CP2, 0.1), 0 , 1);
-            this.eye_tPoint1_CP1 = constrain(randomGaussian(this.eye_tPoint1_CP1, 0.1), 0 , 1);
-            this.eye_tPoint1_CP2 = constrain(randomGaussian(this.eye_tPoint1_CP2, 0.1), 0 , 1);
-            this.eye_outSide_CP1 = constrain(randomGaussian(this.eye_outSide_CP1, 0.1), 0 , 1);
-            this.eye_outSide_CP2 = constrain(randomGaussian(this.eye_outSide_CP2, 0.1), 0 , 1);
-            this.eye_bPoint_CP1 = constrain(randomGaussian(this.eye_bPoint_CP1, 0.1), 0 , 1);
+            this.eye_tPoint_CP1 = constrain(randomGaussian(this.eye_tPoint_CP1, 0.25), 0 , 1);
+            this.eye_tPoint_CP2 = constrain(randomGaussian(this.eye_tPoint_CP2, 0.25), 0 , 1);
+            this.eye_tPoint1_CP1 = constrain(randomGaussian(this.eye_tPoint1_CP1, 0.25), 0 , 1);
+            this.eye_tPoint1_CP2 = constrain(randomGaussian(this.eye_tPoint1_CP2, 0.25), 0 , 1);
+            this.eye_outSide_CP1 = constrain(randomGaussian(this.eye_outSide_CP1, 0.25), 0 , 1);
+            this.eye_outSide_CP2 = constrain(randomGaussian(this.eye_outSide_CP2, 0.25), 0 , 1);
+            this.eye_bPoint_CP1 = constrain(randomGaussian(this.eye_bPoint_CP1, 0.25), 0 , 1);
             this.eye_bPoint_CP2 = constrain(randomGaussian(this.eye_bPoint_CP2, 0.1), 0 , 1);
-            this.eye_bPoint1_CP1 = constrain(randomGaussian(this.eye_bPoint1_CP1, 0.1), 0 , 1);
-            this.eye_bPoint1_CP2 = constrain(randomGaussian(this.eye_bPoint1_CP2, 0.1), 0 , 1);
+            this.eye_bPoint1_CP1 = constrain(randomGaussian(this.eye_bPoint1_CP1, 0.25), 0 , 1);
+            this.eye_bPoint1_CP2 = constrain(randomGaussian(this.eye_bPoint1_CP2, 0.25), 0 , 1);
             
             this.eyelash_height = map(randomGaussian(this.eyelash_height, 0.3), 0 , 1, 0.02, 0.045, true);
 
@@ -110,10 +119,16 @@
             this.pupilW = map(randomGaussian(this.pupilW, 0.3), 0 , 1, 0.2 , 0.3, true);
             this.pupilH = map(randomGaussian(this.pupilH, 0.3), 0 , 1, 0.05, 0.09, true);
             this.eye_width_Para = map(this.eye_width_Para, 0 ,1 , 0.2 , 0.3, true);
+            
+            this.eyebrow_W = map(randomGaussian(this.eyebrow_W, 0.35), 0 , 1, 0.25, 0.33, true);
+            this.eyebrow_outSide = map(randomGaussian(this.eyebrow_outSide, 0.25), 0 , 1, this.eyebrow_Ymin, this.eyebrow_Ymax, true);
+            this.eyebrow_inSide = map(randomGaussian(this.eyebrow_inSide, 0.25), 0 , 1, this.eyebrow_Ymin, this.eyebrow_Ymax, true);
 
             this.earX = map(randomGaussian(this.earX, 0.25), 0 ,1 , 0.11 , 0.14, true);
             this.earY = map(randomGaussian(this.earY, 0.25), 0 ,1 , 0.03 , 0.06, true);
             this.noseY = map(randomGaussian(this.noseY, 0.25), 0 ,1 , 0 , 0.05, true);
+            this.mouseY = map(randomGaussian(this.mouseY, 0.25), 0 ,1 , -0.02 , 0.03, true);
+            this.mouseW = map(randomGaussian(this.mouseW, 0.3), 0 ,1 , 0.3 , 0.9, true);
         }
     }
 
@@ -142,10 +157,10 @@
             let faceBoundL = this.x-this.faceWidth/2;
             let faceBoundT = this.y-this.faceHeight/2;
             let faceBoundB = this.y+this.faceHeight/2;
-            let EyebrowY = this.centerY - this.faceHeight * 0.1;
+            
             let noseYoffest = (this.y + this.faceHeight / 2 - this.centerY) / 3;
             let mouseYoffest = noseYoffest * 2;
-            let faceMostWidthPointY = min(EyebrowY, this.centerY - noseYoffest);
+            let faceMostWidthPointY = min(this.centerY - this.faceHeight * 0.1, this.centerY - noseYoffest);
             let EyebrowOutPointXoffest = this.faceWidth/9 * 4;
             let EyeOutPointXofset = this.faceWidth/8*3;
             push();
@@ -177,9 +192,11 @@
             endShape();
             ///*
             this.DrawEyes(this.x, this.centerY, this.faceWidth/4);
-            //this.DrawEyebrow(this.x, EyebrowY, this.faceWidth/4.5);
+            let EyebrowInside = this.centerY - (this.faceHeight * this.faceData.eye_height_Para + 2*this.faceHeight * this.faceData.eyelash_height + 2*this.faceHeight*this.faceData.eyebrow_inSide)/2;
+            let EyebrowOutSide = this.centerY - (this.faceHeight * this.faceData.eye_height_Para + 2*this.faceHeight * this.faceData.eyelash_height + 2*this.faceHeight*this.faceData.eyebrow_outSide)/2;
+            this.DrawEyebrow(this.x, EyebrowInside, EyebrowOutSide, this.faceWidth/4.5);
             this.DrawNose(this.x, this.centerY + noseYoffest);
-            //this.DrawMouse(this.x, this.centerY + mouseYoffest, this.faceWidth/4);
+            this.DrawMouse(this.x, this.centerY + mouseYoffest, this.faceWidth/4);
             
             //*/
             pop();
@@ -416,23 +433,49 @@
             */
         }
 
-        DrawEyebrow(x, y, s){
-            this.TestPoint(x + s/2, y);
-            this.TestPoint(x + s/2 + this.faceWidth / 3, y + 0);
+        DrawEyebrow(x, y, y1, s){
+            let insideX = s/2;
+            let outsideX = insideX + this.faceWidth * this.faceData.eyebrow_W;
+            let Xcontrol = lerp(insideX, insideX + this.faceWidth * this.faceData.eye_width_Para, this.faceData.eye_tPoint_Para*0.5);
+            let Ycontrol = lerp(min(y, y1) - this.faceHeight * 0.02, (y+y1)/2 - this.faceHeight * 0.03, pow(norm(abs(y-y1), 0, (this.faceData.eyebrow_Ymax-this.faceData.eyebrow_Ymin)*this.faceHeight), 2));
 
-            this.TestPoint(x - s/2, y);
-            this.TestPoint(x - s/2 - this.faceWidth / 3, y + 0);
+            stroke(0);
+            strokeWeight(2);
+            for(let i = 0; i < 2; i++){
+                bezier(
+                x + insideX, y, 
+                x + (insideX + outsideX)*1/3, Ycontrol,
+                x + (insideX + outsideX)*2/3, Ycontrol,
+                x + outsideX, y1);
+                insideX *= -1;
+                outsideX *= -1;
+                Xcontrol *= -1;
+            }
         }
 
         DrawNose(x, y){
-            stroke(90, 50, 50);
+            stroke(50, 20, 20);
             strokeWeight(2.5);
             point(x,y+this.faceHeight*this.faceData.noseY);
         }
 
         DrawMouse(x, y, s){
-            this.TestPoint(x + s/2, y + 0);
-            this.TestPoint(x - s/2, y + 0);
+            s = s * 0.5 * this.faceData.mouseW;
+            stroke(60, 30, 30);
+            strokeWeight(2);
+            point(x + s, y + 0);
+            point(x - s, y + 0);
+
+            strokeWeight(1.5);
+            bezier(
+                x + s, y, 
+                lerp(x+s, x-s, 0.2), y+this.faceHeight * this.faceData.mouseY,
+                lerp(x-s, x+s, 0.2), y+this.faceHeight * this.faceData.mouseY,
+                x - s, y);
+                
+            stroke(255, 237, 229);
+            strokeWeight(2);
+            point(x, bezierPoint(y, y+this.faceHeight * this.faceData.mouseY, y+this.faceHeight * this.faceData.mouseY, y, 0.5));
         }
 
         DrawEars(x1, x2, y1, y2){
