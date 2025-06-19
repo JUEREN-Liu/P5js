@@ -164,6 +164,7 @@
             let EyebrowOutPointXoffest = this.faceWidth/9 * 4;
             let EyeOutPointXofset = this.faceWidth/8*3;
             push();
+            
             fill(255, 237, 229);
             let mandibleAngleXoffset = this.faceWidth / 8 * 2.4;//下顎骨
             let earX = curvePoint(faceBoundR, faceBoundR, this.x + mandibleAngleXoffset, this.x, 0.5);
@@ -171,14 +172,28 @@
             this.DrawEars(earX - this.x, earX1 - this.x, this.centerY, this.centerY + (mouseYoffest + noseYoffest)/2);
 
             beginShape();
-            vertex(faceBoundL, faceMostWidthPointY);
-            bezierVertex(
+            fill(55, 50, 50);
+            vertex(faceBoundL, faceMostWidthPointY-1);
+            this.TestDrawBezierVertex(
+                faceBoundL, faceMostWidthPointY-1,
                 this.x-this.faceWidth*0.55, this.y-this.faceHeight*0.65, 
                 this.x+this.faceWidth*0.55, this.y-this.faceHeight*0.65, 
+                faceBoundR, faceMostWidthPointY-1);
+            endShape();
+
+            beginShape();
+            fill(255, 237, 229);
+            vertex(faceBoundL, faceMostWidthPointY);
+            this.TestDrawBezierVertex(
+                faceBoundL, faceMostWidthPointY,
+                lerp(faceBoundL,faceBoundR, 0.05), this.y-this.faceHeight*0.39, 
+                lerp(faceBoundR,faceBoundL, 0.05), this.y-this.faceHeight*0.39, 
                 faceBoundR, faceMostWidthPointY);
             endShape();
+
             curveTightness(0.2);
             beginShape();
+            fill(255, 237, 229);
             this.DrawTestCurveVertex(faceBoundR, faceBoundT);
             this.DrawTestCurveVertex(faceBoundR, faceMostWidthPointY);
             
@@ -190,15 +205,46 @@
             this.DrawTestCurveVertex(faceBoundL, faceMostWidthPointY);
             this.DrawTestCurveVertex(faceBoundL, faceBoundT);
             endShape();
+
+            beginShape();
+            fill(55, 50, 50);
+            vertex(faceBoundL, faceMostWidthPointY);
+            let hair_x1 = curvePoint(faceBoundL,faceBoundL,this.x - mandibleAngleXoffset,this.x, 0.5);
+            let hair_y1 = curvePoint(faceBoundT,faceMostWidthPointY,this.centerY + mouseYoffest*0.99,this.y + this.faceHeight /2, 0.5);
+            vertex(hair_x1, hair_y1);
+            vertex(
+                bezierPoint(faceBoundL,faceBoundL,faceBoundR,faceBoundR, 0.1),
+                bezierPoint(faceMostWidthPointY,this.y-this.faceHeight*0.52,this.y-this.faceHeight*0.52,faceMostWidthPointY, 0.1)
+            );
+            endShape();
+            beginShape();
+            fill(55, 50, 50);
+            vertex(faceBoundR, faceMostWidthPointY);
+            let hair_x2 = curvePoint(faceBoundR,faceBoundR,this.x + mandibleAngleXoffset,this.x, 0.5);
+            let hair_y2 = curvePoint(faceBoundT,faceMostWidthPointY,this.centerY + mouseYoffest*0.99,this.y + this.faceHeight /2, 0.5);
+            vertex(hair_x2, hair_y2);
+            vertex(
+                bezierPoint(faceBoundR,faceBoundR,faceBoundL,faceBoundL, 0.1),
+                bezierPoint(faceMostWidthPointY,this.y-this.faceHeight*0.52,this.y-this.faceHeight*0.52,faceMostWidthPointY, 0.1)
+            );
+            endShape();
+
             ///*
             this.DrawEyes(this.x, this.centerY, this.faceWidth/4);
-            let EyebrowInside = this.centerY - (this.faceHeight * this.faceData.eye_height_Para + 2*this.faceHeight * this.faceData.eyelash_height + 2*this.faceHeight*this.faceData.eyebrow_inSide)/2;
-            let EyebrowOutSide = this.centerY - (this.faceHeight * this.faceData.eye_height_Para + 2*this.faceHeight * this.faceData.eyelash_height + 2*this.faceHeight*this.faceData.eyebrow_outSide)/2;
-            this.DrawEyebrow(this.x, EyebrowInside, EyebrowOutSide, this.faceWidth/4.5);
+            let EyebrowInside = this.centerY - this.faceHeight*(this.faceData.eye_height_Para + 2*this.faceData.eyelash_height + 2*this.faceData.eyebrow_inSide)/2;
+            let EyebrowOutSide = this.centerY - this.faceHeight*(this.faceData.eye_height_Para + 2*this.faceData.eyelash_height + 2*this.faceData.eyebrow_outSide)/2;
             this.DrawNose(this.x, this.centerY + noseYoffest);
             this.DrawMouse(this.x, this.centerY + mouseYoffest, this.faceWidth/4);
-            
+            this.DrawHair(
+                min(EyebrowInside, EyebrowOutSide),
+                max(EyebrowInside, EyebrowOutSide),
+                this.centerY - this.faceHeight*(this.faceData.eye_height_Para + 2*this.faceData.eyelash_height)/2,
+                this.centerY + (this.faceHeight * this.faceData.eye_height_Para)/2,
+                faceMostWidthPointY
+            )
+            this.DrawEyebrow(this.x, EyebrowInside, EyebrowOutSide, this.faceWidth/4.5);
             //*/
+            
             pop();
             
         }
@@ -441,6 +487,7 @@
 
             stroke(0);
             strokeWeight(2);
+            noFill();
             for(let i = 0; i < 2; i++){
                 bezier(
                 x + insideX, y, 
@@ -497,9 +544,54 @@
             }
         }
 
+        DrawHair(eyebrow1, eyebrow2, eye1, eye2, faceMostWidthPointY){
+            let c = 3;
+            let hairs = [];
+            let fL = this.x-this.faceWidth/2;
+            let fR = this.x+this.faceWidth/2;
+            let y = random(-1, 1);
+            beginShape();
+            noFill();
+            stroke(100);
+            vertex(fL, faceMostWidthPointY);
+            this.TestDrawBezierVertex(
+                fL, faceMostWidthPointY,
+                fL, this.y-this.faceHeight*0.52, 
+                fR, this.y-this.faceHeight*0.52, 
+                fR, faceMostWidthPointY);
+            endShape();
+            /*
+            noFill();
+            stroke(100);
+            beginShape();
+            vertex(fL, faceMostWidthPointY);
+            this.TestDrawBezierVertex(
+                fL, faceMostWidthPointY,
+                lerp(fL, fR, 0.3), faceMostWidthPointY + y * this.faceHeight/8,
+                lerp(fR, fL, 0.3), faceMostWidthPointY + y * this.faceHeight/8,
+                fR, faceMostWidthPointY
+            );
+            endShape();
+            */
+            for(let i = 0; i< c; i++){
+                let r = constrain(randomGaussian(1/(c+1)*(i+1), 0.1),0,1);
+                hairs.push(map(r, 0,1, fL,fR), true);
+                let xP = bezierPoint(fL, lerp(fL, fR, 0.3), lerp(fR, fL, 0.3), fR, 
+                    r);
+                let yP = bezierPoint(faceMostWidthPointY, faceMostWidthPointY + y * this.faceHeight/8, faceMostWidthPointY + y * this.faceHeight/8, faceMostWidthPointY, 
+                    r);
+                this.TestPoint(xP,yP);
+            }
+            
+        }
+
+        DarwUnitHair(x, y, x1, y1, h, ){
+            
+        }
+        
         TestPoint(x, y){
-            stroke(0);
-            strokeWeight(2);
+            stroke(255,0,0);
+            strokeWeight(3);
             point(x,y);
         }
     }
