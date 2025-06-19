@@ -508,6 +508,7 @@
 
         DrawMouse(x, y, s){
             s = s * 0.5 * this.faceData.mouseW;
+            noFill();
             stroke(60, 30, 30);
             strokeWeight(2);
             point(x + s, y + 0);
