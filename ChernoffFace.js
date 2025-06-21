@@ -20,11 +20,15 @@
         size = 150;
         row = floor(width / size);
         column = floor(height / size);
-
+        //faceData = new FaceData(size+ size / 2, size + size / 2, size);
         for(let i=0; i < column; i++){
             for(let j = 0; j < row; j++){
                 faceData = new FaceData(size * j + size / 2, size * i + size / 2, size);
-                face1 = new Face(faceData).DrawFace();
+                //faceData.SetPos(size * j + size / 2, size * i + size / 2, size);
+                
+                //faceData.RandomHair();
+                //faceData.RandomEye();
+                face = new Face(faceData).DrawFace();
             }
         }
     }
@@ -36,7 +40,17 @@
         faceWidth = 0.5;
         faceHeight = 0.9;
         faceCenterY = 0.5;
-
+        headCurveX = 0.5;
+        headCurveY = 0.5;
+        foreheadY = 0.5;
+        hairPiece = 0.5;
+        hairUnitWidth = 0.5;
+        hairCross = 0.5;
+        hairFlatness = 0.5;
+        sideburnsY = 0.5;
+        hairColor = color(65, 60, 60);
+        hairLineColor = 55;
+        
         eye_height_Para = 0.5;
         eye_width_Para = 0.5;
         eye_inSide_Para = 0.5;
@@ -85,50 +99,132 @@
             this.x = x;
             this.y = y;
             this.w = w;
-            this.faceWidth = map(randomGaussian(this.faceWidth, 0.1), 0, 1, 0.6 , 0.8, true);
-            this.faceCenterY = map(randomGaussian(this.faceCenterY, 0.25), 0, 1, 0.11 , 0.14, true);
-            this.eye_height_Para = map(randomGaussian(this.eye_height_Para, 0.4), 0, 1, 0.06 , 0.18, true);
-            
-            this.eye_width_Para = constrain(randomGaussian(this.eye_width_Para, 0.2), 0 ,1);
-            this.eye_inSide_Para = constrain(randomGaussian(this.eye_inSide_Para, 0.2), 0 , 1);
+            this.RandomFace();
+            this.RandomHair();
+            this.RandomEye();
+            this.RandomPupil();
+            this.RandomEyebrow();
+        }
+
+        mapRand(base, std, min, max){
+            return map(randomGaussian(base, std), 0, 1, min, max, true);
+        }
+
+        constrainRand(base, std){
+            return constrain(randomGaussian(base, std), 0, 1);
+        }
+
+        RandomFace(){
+            this.faceWidth = 0.5;
+            this.faceHeight = 0.9;
+            this.faceCenterY = 0.5;
+            this.headCurveX = 0.5;
+            this.headCurveY = 0.5;
+            this.foreheadY = 0.5;
+            this.earX = 0.5;
+            this.earY = 0.5;
+            this.noseY = 0.5;
+            this.mouseY = 0.5;
+            this.mouseW = 0.5;
+            this.faceWidth = this.mapRand(this.faceWidth, 0.1, 0.6 , 0.8);
+            this.faceCenterY = this.mapRand(this.faceCenterY, 0.3, 0.11, 0.2);
+            this.headCurveX = this.mapRand(this.headCurveX, 0.25, 0.51 , 0.58);
+            this.headCurveY = this.mapRand(this.headCurveY, 0.25, 0.62 , 0.7);
+            this.foreheadY = this.mapRand(this.foreheadY, 0.25, 0.3 , 0.4);
+            this.earX = this.mapRand(this.earX, 0.25, 0.11 , 0.14);
+            this.earY = this.mapRand(this.earY, 0.25, 0.03 , 0.06);
+            this.noseY = this.mapRand(this.noseY, 0.25, 0 , 0.05);
+            this.mouseY = this.mapRand(this.mouseY, 0.25, -0.02 , 0.03);
+            this.mouseW = this.mapRand(this.mouseW, 0.3, 0.3 , 0.9);
+        }
+
+        RandomHair(){
+            this.hairPiece = 0.5;
+            this.hairUnitWidth = 0.5;
+            this.hairCross = 0.5;
+            this.hairFlatness = 0.5;
+            this.sideburnsY = 0.5;
+            this.hairPiece = floor(this.mapRand(this.hairPiece, 0.25, 2 , 15));
+            this.hairUnitWidth = this.mapRand(this.hairUnitWidth, 0.5, 0.01 , 0.2);
+            this.hairCross = this.mapRand(this.hairCross, 0.3, 0.01 , 0.1);
+            this.hairFlatness = this.constrainRand(this.hairFlatness, 0.3);
+            this.sideburnsY = this.mapRand(this.sideburnsY, 0.3, 0, 3);
+        }
+
+        RandomEye(){
+            this.eye_height_Para = 0.5;
+            this.eye_width_Para = 0.5;
+            this.eye_inSide_Para = 0.5;
+            this.eye_tPoint_Para = 0.5;
+            this.eye_tPoint1_Para = 0.3;
+            this.eye_outSide_Para = 0.5;
+            this.eye_bPoint_Para = 0.3;
+            this.eye_bPoint1_Para = 0.5;
+            this.eye_inSide_CP1 = 0.4;
+            this.eye_inSide_CP2 = 0.5;
+            this.eye_tPoint_CP1 = 0.6;
+            this.eye_tPoint_CP2 = 0.5;
+            this.eye_tPoint1_CP1 = 0.5;
+            this.eye_tPoint1_CP2 = 0.0;
+            this.eye_outSide_CP1 = 0.7;
+            this.eye_outSide_CP2 = 0.0;
+            this.eye_bPoint_CP1 = 0.5;
+            this.eye_bPoint_CP2 = 0.5;
+            this.eye_bPoint1_CP1 = 0.4;
+            this.eye_bPoint1_CP2 = 0.5;
+            this.eyelash_height = 0.5;
+            this.eye_height_Para = this.mapRand(this.eye_height_Para, 0.4, 0.06 , 0.18);
+            this.eye_width_Para = this.constrainRand(this.eye_width_Para, 0.2);
+            this.eye_inSide_Para = this.constrainRand(this.eye_inSide_Para, 0.2);
             this.eye_outSide_Para = constrain(randomGaussian(this.eye_outSide_Para, 0.2), pow(this.eye_width_Para, 2) * 0.2 , 1);
             this.eye_tPoint_Para = constrain(randomGaussian(this.eye_tPoint_Para, 0.2), (1-this.eye_inSide_Para) * 0.3 , 1-(1-this.eye_outSide_Para)* 0.4);//1);
             this.eye_tPoint1_Para = constrain(randomGaussian(this.eye_tPoint1_Para, 0.25), 0 , 1-(1-this.eye_outSide_Para)* 0.7);
-            this.eye_bPoint_Para = constrain(randomGaussian(this.eye_bPoint_Para, 0.25), 0 , 1);
-            this.eye_bPoint1_Para = constrain(randomGaussian(this.eye_bPoint1_Para, 0.1), 0 , 1);
-            
-            this.eye_inSide_CP1 = constrain(randomGaussian(this.eye_inSide_CP1, 0.25), 0 , 1);
-            this.eye_inSide_CP2 = constrain(randomGaussian(this.eye_inSide_CP2, 0.1), 0 , 1);
-            this.eye_tPoint_CP1 = constrain(randomGaussian(this.eye_tPoint_CP1, 0.25), 0 , 1);
-            this.eye_tPoint_CP2 = constrain(randomGaussian(this.eye_tPoint_CP2, 0.25), 0 , 1);
-            this.eye_tPoint1_CP1 = constrain(randomGaussian(this.eye_tPoint1_CP1, 0.25), 0 , 1);
-            this.eye_tPoint1_CP2 = constrain(randomGaussian(this.eye_tPoint1_CP2, 0.25), 0 , 1);
-            this.eye_outSide_CP1 = constrain(randomGaussian(this.eye_outSide_CP1, 0.25), 0 , 1);
-            this.eye_outSide_CP2 = constrain(randomGaussian(this.eye_outSide_CP2, 0.25), 0 , 1);
-            this.eye_bPoint_CP1 = constrain(randomGaussian(this.eye_bPoint_CP1, 0.25), 0 , 1);
-            this.eye_bPoint_CP2 = constrain(randomGaussian(this.eye_bPoint_CP2, 0.1), 0 , 1);
-            this.eye_bPoint1_CP1 = constrain(randomGaussian(this.eye_bPoint1_CP1, 0.25), 0 , 1);
-            this.eye_bPoint1_CP2 = constrain(randomGaussian(this.eye_bPoint1_CP2, 0.25), 0 , 1);
-            
-            this.eyelash_height = map(randomGaussian(this.eyelash_height, 0.3), 0 , 1, 0.02, 0.045, true);
-
-            this.pupil_CPX = constrain(randomGaussian(this.pupil_CPX, 0.05), 0 , 1);
-            this.pupil_CPY = constrain(randomGaussian(this.pupil_CPY, 0.1), 0 , 1);
-            this.pupilXoffset = map(randomGaussian(this.pupilXoffset, 0.4), 0 , 1, 0.35, 0.45,true);
-            this.pupilYoffset = map(randomGaussian(this.pupilYoffset, 0.4), 0 , 1, 0.45, 0.65, true);
-            this.pupilW = map(randomGaussian(this.pupilW, 0.3), 0 , 1, 0.2 , 0.3, true);
-            this.pupilH = map(randomGaussian(this.pupilH, 0.3), 0 , 1, 0.05, 0.09, true);
+            this.eye_bPoint_Para = this.constrainRand(this.eye_bPoint_Para, 0.25);
+            this.eye_bPoint1_Para = this.constrainRand(this.eye_bPoint1_Para, 0.1);
             this.eye_width_Para = map(this.eye_width_Para, 0 ,1 , 0.2 , 0.3, true);
-            
-            this.eyebrow_W = map(randomGaussian(this.eyebrow_W, 0.35), 0 , 1, 0.25, 0.33, true);
-            this.eyebrow_outSide = map(randomGaussian(this.eyebrow_outSide, 0.25), 0 , 1, this.eyebrow_Ymin, this.eyebrow_Ymax, true);
-            this.eyebrow_inSide = map(randomGaussian(this.eyebrow_inSide, 0.25), 0 , 1, this.eyebrow_Ymin, this.eyebrow_Ymax, true);
+            this.eye_inSide_CP1 = this.constrainRand(this.eye_inSide_CP1, 0.25);
+            this.eye_inSide_CP2 = this.constrainRand(this.eye_inSide_CP2, 0.1);
+            this.eye_tPoint_CP1 = this.constrainRand(this.eye_tPoint_CP1, 0.25);
+            this.eye_tPoint_CP2 = this.constrainRand(this.eye_tPoint_CP2, 0.25);
+            this.eye_tPoint1_CP1 = this.constrainRand(this.eye_tPoint1_CP1, 0.25);
+            this.eye_tPoint1_CP2 = this.constrainRand(this.eye_tPoint1_CP2, 0.25);
+            this.eye_outSide_CP1 = this.constrainRand(this.eye_outSide_CP1, 0.25);
+            this.eye_outSide_CP2 = this.constrainRand(this.eye_outSide_CP2, 0.25);
+            this.eye_bPoint_CP1 = this.constrainRand(this.eye_bPoint_CP1, 0.25);
+            this.eye_bPoint_CP2 = this.constrainRand(this.eye_bPoint_CP2, 0.1);
+            this.eye_bPoint1_CP1 = this.constrainRand(this.eye_bPoint1_CP1, 0.25);
+            this.eye_bPoint1_CP2 = this.constrainRand(this.eye_bPoint1_CP2, 0.25);
+            this.eyelash_height = this.mapRand(this.eyelash_height, 0.3, 0.02, 0.045);
+        }
 
-            this.earX = map(randomGaussian(this.earX, 0.25), 0 ,1 , 0.11 , 0.14, true);
-            this.earY = map(randomGaussian(this.earY, 0.25), 0 ,1 , 0.03 , 0.06, true);
-            this.noseY = map(randomGaussian(this.noseY, 0.25), 0 ,1 , 0 , 0.05, true);
-            this.mouseY = map(randomGaussian(this.mouseY, 0.25), 0 ,1 , -0.02 , 0.03, true);
-            this.mouseW = map(randomGaussian(this.mouseW, 0.3), 0 ,1 , 0.3 , 0.9, true);
+        RandomPupil(){
+            this.pupil_CPX = 0.6;
+            this.pupil_CPY = 0.6;
+            this.pupilXoffset = 0.5;
+            this.pupilYoffset = 0.5;
+            this.pupilW = 0.5;
+            this.pupilH = 0.5;
+            this.pupil_CPX = this.constrainRand(this.pupil_CPX, 0.05);
+            this.pupil_CPY = this.constrainRand(this.pupil_CPY, 0.1);
+            this.pupilXoffset = this.mapRand(this.pupilXoffset, 0.4, 0.35, 0.45);
+            this.pupilYoffset = this.mapRand(this.pupilYoffset, 0.4, 0.45, 0.65);
+            this.pupilW = this.mapRand(this.pupilW, 0.3, 0.2 , 0.3);
+            this.pupilH = this.mapRand(this.pupilH, 0.3, 0.05, 0.09);
+        }
+
+        RandomEyebrow(){
+            this.eyebrow_W = 0.5;
+            this.eyebrow_outSide = 0.5;
+            this.eyebrow_inSide = 0.5;
+            this.eyebrow_W = this.mapRand(this.eyebrow_W, 0.35, 0.25, 0.33);
+            this.eyebrow_outSide = this.mapRand(this.eyebrow_outSide, 0.25, this.eyebrow_Ymin, this.eyebrow_Ymax);
+            this.eyebrow_inSide = this.mapRand(this.eyebrow_inSide, 0.25, this.eyebrow_Ymin, this.eyebrow_Ymax);
+        }
+
+        SetPos(x, y, w){
+            this.x = x;
+            this.y = y;
+            this.w = w;
         }
     }
 
@@ -140,6 +236,10 @@
         faceWidth = 0;
         faceHeight = 0;
         faceData;
+        faceBoundR;
+        faceBoundL;
+        faceBoundT;
+        faceBoundB;
         constructor(faceData){
             this.faceData = faceData;
             this.x = faceData.x;
@@ -151,12 +251,11 @@
         }
 
         DrawFace(){
-            stroke(255, 0, 0);
             stroke(0);
-            let faceBoundR = this.x+this.faceWidth/2;
-            let faceBoundL = this.x-this.faceWidth/2;
-            let faceBoundT = this.y-this.faceHeight/2;
-            let faceBoundB = this.y+this.faceHeight/2;
+            this.faceBoundR = this.x+this.faceWidth/2;
+            this.faceBoundL = this.x-this.faceWidth/2;
+            this.faceBoundT = this.y-this.faceHeight/2;
+            this.faceBoundB = this.y+this.faceHeight/2;
             
             let noseYoffest = (this.y + this.faceHeight / 2 - this.centerY) / 3;
             let mouseYoffest = noseYoffest * 2;
@@ -167,65 +266,67 @@
             
             fill(255, 237, 229);
             let mandibleAngleXoffset = this.faceWidth / 8 * 2.4;//下顎骨
-            let earX = curvePoint(faceBoundR, faceBoundR, this.x + mandibleAngleXoffset, this.x, 0.5);
-            let earX1 = curvePoint(faceBoundR, earX, this.x + mandibleAngleXoffset, this.x, 0.75);
+            let earX = curvePoint(this.faceBoundR, this.faceBoundR, this.x + mandibleAngleXoffset, this.x, 0.5);
+            let earX1 = curvePoint(this.faceBoundR, earX, this.x + mandibleAngleXoffset, this.x, 0.75);
             this.DrawEars(earX - this.x, earX1 - this.x, this.centerY, this.centerY + (mouseYoffest + noseYoffest)/2);
 
-            beginShape();
-            fill(55, 50, 50);
-            vertex(faceBoundL, faceMostWidthPointY-1);
+            beginShape();//head
+            fill(this.faceData.hairColor);
+            vertex(this.faceBoundL, faceMostWidthPointY-1);
             this.TestDrawBezierVertex(
-                faceBoundL, faceMostWidthPointY-1,
-                this.x-this.faceWidth*0.55, this.y-this.faceHeight*0.65, 
-                this.x+this.faceWidth*0.55, this.y-this.faceHeight*0.65, 
-                faceBoundR, faceMostWidthPointY-1);
+                this.faceBoundL, faceMostWidthPointY-1,
+                this.x-this.faceWidth*this.faceData.headCurveX*random(1,1.09), this.y-this.faceHeight*this.faceData.headCurveY, 
+                this.x+this.faceWidth*this.faceData.headCurveX*random(1,1.09), this.y-this.faceHeight*this.faceData.headCurveY,
+                this.faceBoundR, faceMostWidthPointY-1);
             endShape();
 
-            beginShape();
+            beginShape();//forehead
             fill(255, 237, 229);
-            vertex(faceBoundL, faceMostWidthPointY);
+            stroke(this.faceData.hairColor);
+            vertex(this.faceBoundL, faceMostWidthPointY);
             this.TestDrawBezierVertex(
-                faceBoundL, faceMostWidthPointY,
-                lerp(faceBoundL,faceBoundR, 0.05), this.y-this.faceHeight*0.39, 
-                lerp(faceBoundR,faceBoundL, 0.05), this.y-this.faceHeight*0.39, 
-                faceBoundR, faceMostWidthPointY);
+                this.faceBoundL, faceMostWidthPointY,
+                lerp(this.faceBoundL,this.faceBoundR, 0.05), this.y-this.faceHeight*this.faceData.foreheadY, 
+                lerp(this.faceBoundR,this.faceBoundL, 0.05), this.y-this.faceHeight*this.faceData.foreheadY, 
+                this.faceBoundR, faceMostWidthPointY);
             endShape();
 
             curveTightness(0.2);
-            beginShape();
+            beginShape();//face
+            stroke(0);
             fill(255, 237, 229);
-            this.DrawTestCurveVertex(faceBoundR, faceBoundT);
-            this.DrawTestCurveVertex(faceBoundR, faceMostWidthPointY);
+            this.DrawTestCurveVertex(this.faceBoundR, this.faceBoundT);
+            this.DrawTestCurveVertex(this.faceBoundR, faceMostWidthPointY);
             
-            //this.DrawTestCurveVertex(lerp(faceBoundR, this.x + mandibleAngleXoffset, 0.2), this.centerY + noseYoffest*0.5);
             this.DrawTestCurveVertex(this.x + mandibleAngleXoffset, this.centerY + mouseYoffest*0.99);
             this.DrawTestCurveVertex(this.x , this.y + this.faceHeight /2);
             this.DrawTestCurveVertex(this.x - mandibleAngleXoffset, this.centerY + mouseYoffest*0.99);
-            //this.DrawTestCurveVertex(lerp(faceBoundL, this.x - mandibleAngleXoffset, 0.2), this.centerY + noseYoffest*0.5);
-            this.DrawTestCurveVertex(faceBoundL, faceMostWidthPointY);
-            this.DrawTestCurveVertex(faceBoundL, faceBoundT);
+            this.DrawTestCurveVertex(this.faceBoundL, faceMostWidthPointY);
+            this.DrawTestCurveVertex(this.faceBoundL, this.faceBoundT);
             endShape();
 
-            beginShape();
-            fill(55, 50, 50);
-            vertex(faceBoundL, faceMostWidthPointY);
-            let hair_x1 = curvePoint(faceBoundL,faceBoundL,this.x - mandibleAngleXoffset,this.x, 0.5);
-            let hair_y1 = curvePoint(faceBoundT,faceMostWidthPointY,this.centerY + mouseYoffest*0.99,this.y + this.faceHeight /2, 0.5);
+            beginShape();//鬢角
+            stroke(this.faceData.hairColor);
+            fill(this.faceData.hairColor);
+            vertex(this.faceBoundL, faceMostWidthPointY);
+            let hair_x1 = curvePoint(this.faceBoundL,this.faceBoundL,this.x - mandibleAngleXoffset,this.x, 0.4);
+            let hair_y1 = curvePoint(this.faceBoundT,faceMostWidthPointY,this.centerY + mouseYoffest*0.99,this.y + this.faceHeight /2, 0.4);
             vertex(hair_x1, hair_y1);
             vertex(
-                bezierPoint(faceBoundL,faceBoundL,faceBoundR,faceBoundR, 0.1),
-                bezierPoint(faceMostWidthPointY,this.y-this.faceHeight*0.52,this.y-this.faceHeight*0.52,faceMostWidthPointY, 0.1)
+                bezierPoint(this.faceBoundL,this.faceBoundL,this.faceBoundR,this.faceBoundR, 0.2),
+                bezierPoint(faceMostWidthPointY,this.y-this.faceHeight*0.52,this.y-this.faceHeight*0.52,faceMostWidthPointY, 0.2)
             );
             endShape();
             beginShape();
-            fill(55, 50, 50);
-            vertex(faceBoundR, faceMostWidthPointY);
-            let hair_x2 = curvePoint(faceBoundR,faceBoundR,this.x + mandibleAngleXoffset,this.x, 0.5);
-            let hair_y2 = curvePoint(faceBoundT,faceMostWidthPointY,this.centerY + mouseYoffest*0.99,this.y + this.faceHeight /2, 0.5);
+            fill(this.faceData.hairColor);
+            noStroke();
+            vertex(this.faceBoundR, faceMostWidthPointY);
+            let hair_x2 = curvePoint(this.faceBoundR,this.faceBoundR,this.x + mandibleAngleXoffset,this.x, 0.4);
+            let hair_y2 = curvePoint(this.faceBoundT,faceMostWidthPointY,this.centerY + mouseYoffest*0.99,this.y + this.faceHeight /2, 0.4);
             vertex(hair_x2, hair_y2);
             vertex(
-                bezierPoint(faceBoundR,faceBoundR,faceBoundL,faceBoundL, 0.1),
-                bezierPoint(faceMostWidthPointY,this.y-this.faceHeight*0.52,this.y-this.faceHeight*0.52,faceMostWidthPointY, 0.1)
+                bezierPoint(this.faceBoundR,this.faceBoundR,this.faceBoundL,this.faceBoundL, 0.2),
+                bezierPoint(faceMostWidthPointY,this.y-this.faceHeight*0.52,this.y-this.faceHeight*0.52,faceMostWidthPointY, 0.2)
             );
             endShape();
 
@@ -485,7 +586,7 @@
             let Xcontrol = lerp(insideX, insideX + this.faceWidth * this.faceData.eye_width_Para, this.faceData.eye_tPoint_Para*0.5);
             let Ycontrol = lerp(min(y, y1) - this.faceHeight * 0.02, (y+y1)/2 - this.faceHeight * 0.03, pow(norm(abs(y-y1), 0, (this.faceData.eyebrow_Ymax-this.faceData.eyebrow_Ymin)*this.faceHeight), 2));
 
-            stroke(0);
+            stroke(45);
             strokeWeight(2);
             noFill();
             for(let i = 0; i < 2; i++){
@@ -546,48 +647,112 @@
         }
 
         DrawHair(eyebrow1, eyebrow2, eye1, eye2, faceMostWidthPointY){
-            let c = 3;
-            let hairs = [];
-            let fL = this.x-this.faceWidth/2;
-            let fR = this.x+this.faceWidth/2;
-            let y = random(-1, 1);
-            beginShape();
-            noFill();
-            stroke(100);
-            vertex(fL, faceMostWidthPointY);
-            this.TestDrawBezierVertex(
-                fL, faceMostWidthPointY,
-                fL, this.y-this.faceHeight*0.52, 
-                fR, this.y-this.faceHeight*0.52, 
-                fR, faceMostWidthPointY);
-            endShape();
-            /*
-            noFill();
-            stroke(100);
-            beginShape();
-            vertex(fL, faceMostWidthPointY);
-            this.TestDrawBezierVertex(
-                fL, faceMostWidthPointY,
-                lerp(fL, fR, 0.3), faceMostWidthPointY + y * this.faceHeight/8,
-                lerp(fR, fL, 0.3), faceMostWidthPointY + y * this.faceHeight/8,
-                fR, faceMostWidthPointY
-            );
-            endShape();
-            */
-            for(let i = 0; i< c; i++){
-                let r = constrain(randomGaussian(1/(c+1)*(i+1), 0.1),0,1);
-                hairs.push(map(r, 0,1, fL,fR), true);
-                let xP = bezierPoint(fL, lerp(fL, fR, 0.3), lerp(fR, fL, 0.3), fR, 
-                    r);
-                let yP = bezierPoint(faceMostWidthPointY, faceMostWidthPointY + y * this.faceHeight/8, faceMostWidthPointY + y * this.faceHeight/8, faceMostWidthPointY, 
-                    r);
-                this.TestPoint(xP,yP);
+            let hairT_X = [];
+            let hairT_Y = [];
+            let hairB_X = [];
+            let hairB_Y = [];
+
+            for(let i = 0; i< this.faceData.hairPiece+3; i++){
+                let r = constrain(randomGaussian(1/(this.faceData.hairPiece+2)*i, 0.02),0.2,0.8);
+                let xP = bezierPoint(this.faceBoundL, this.faceBoundL, this.faceBoundR, this.faceBoundR, r);
+                let yP = bezierPoint(
+                    faceMostWidthPointY, 
+                    this.y-this.faceHeight*lerp(this.faceData.foreheadY,this.faceData.headCurveY, 0.2), 
+                    this.y-this.faceHeight*lerp(this.faceData.foreheadY,this.faceData.headCurveY, 0.2), 
+                    faceMostWidthPointY, r);
+                hairT_X.push(xP);
+                hairT_Y.push(yP);
             }
+
+            let sideX = random(0.1, 0.15);
+            let sideY = this.faceData.sideburnsY;
+            hairB_X.push(bezierPoint(
+                lerp(this.faceBoundL, this.faceBoundR, 0.0), 
+                lerp(this.faceBoundL, this.faceBoundR, 0.3), 
+                lerp(this.faceBoundR, this.faceBoundL, 0.3), 
+                lerp(this.faceBoundR, this.faceBoundL, 0.0), 
+                sideX));
+            hairB_Y.push(faceMostWidthPointY + sideY * this.faceHeight/8);
+            for(let i = 0; i< this.faceData.hairPiece; i++){
+                let r = constrain(randomGaussian(1/(this.faceData.hairPiece+1)*(i+1), this.faceData.hairCross),0,1);
+                let xP = bezierPoint(
+                    lerp(this.faceBoundL, this.faceBoundR, 0.0), 
+                    lerp(this.faceBoundL, this.faceBoundR, 0.3), 
+                    lerp(this.faceBoundR, this.faceBoundL, 0.3), 
+                    lerp(this.faceBoundR, this.faceBoundL, 0.0), 
+                    r);
+                let rControlP = random(-1, 1);
+                let rAnchorP = random(-1, 1);
+                let yP = bezierPoint(
+                    faceMostWidthPointY + rAnchorP * this.faceHeight/8,
+                    faceMostWidthPointY + rControlP * this.faceHeight/8, 
+                    faceMostWidthPointY + lerp(random(-1, 1), rControlP, this.faceData.hairFlatness*this.faceData.hairFlatness) * this.faceHeight/8, 
+                    faceMostWidthPointY + lerp(random(-1, 1), rAnchorP, this.faceData.hairFlatness*this.faceData.hairFlatness) * this.faceHeight/8, 
+                    r);
+                hairB_X.push(xP);
+                hairB_Y.push(yP);
+            }
+            hairB_X.push(bezierPoint(
+                lerp(this.faceBoundR, this.faceBoundL, 0.0), 
+                lerp(this.faceBoundR, this.faceBoundL, 0.3), 
+                lerp(this.faceBoundL, this.faceBoundR, 0.3), 
+                lerp(this.faceBoundL, this.faceBoundR, 0.0), 
+                sideX));
+            hairB_Y.push(faceMostWidthPointY + sideY * this.faceHeight/8);
             
+            for(let i = 0; i< hairT_X.length-1; i++){
+                if(i===0)
+                    this.DrawSideHair(hairT_X[i], hairT_Y[i], hairT_X[i+1], hairT_Y[i+1], hairB_X[i], hairB_Y[i]);
+                else if(i === hairT_X.length-2)
+                    this.DrawSideHair(hairT_X[i+1], hairT_Y[i+1], hairT_X[i], hairT_Y[i], hairB_X[i], hairB_Y[i]);
+                else
+                    this.DarwUnitHair(hairT_X[i], hairT_Y[i], hairT_X[i+1], hairT_Y[i+1], hairB_X[i], hairB_Y[i]);
+            }
         }
 
-        DarwUnitHair(x, y, x1, y1, h, ){
-            
+        DarwUnitHair(tx, ty, tx1, ty1, bx, by){
+            fill(this.faceData.hairColor);
+            stroke(this.faceData.hairLineColor);
+            beginShape();
+            vertex(tx, ty);
+            this.TestDrawBezierVertex(
+                tx, ty,
+                tx+(tx-this.x)*0.2, lerp(ty, by, 0.3), 
+                constrain(bx+(tx-this.x)*0.2, this.faceBoundL, this.faceBoundR), lerp(by, ty, 0.0), 
+                bx, by);
+            let w = random(0, this.faceData.hairUnitWidth);
+            this.TestDrawBezierVertex(
+                bx, by, 
+                bx, by,
+                min(bx+min(w*this.faceWidth, tx1 - tx), this.faceBoundR), by,
+                min(bx+min(w*this.faceWidth, tx1 - tx), this.faceBoundR), by
+                );
+            this.TestDrawBezierVertex(
+                min(bx+min(w*this.faceWidth, tx1 - tx), this.faceBoundR), by, 
+                constrain(bx+min(w*this.faceWidth, tx1 - tx)+(tx1-this.x)*0.2, this.faceBoundL, this.faceBoundR), lerp(by, ty1, 0.3),
+                constrain(tx1+(tx1-this.x)*0.2, this.faceBoundL, this.faceBoundR), lerp(ty1, by, 0.0),
+                tx1, ty1
+                );
+            endShape();
+        }
+
+        DrawSideHair(tx, ty, tx1, ty1, bx, by){
+            fill(this.faceData.hairColor);
+            stroke(this.faceData.hairLineColor);
+            beginShape();
+            vertex(tx, ty);
+            this.TestDrawBezierVertex(
+                tx, ty,
+                tx+(tx-this.x)*0.2, lerp(ty, by, 0.5),
+                bx+(tx-this.x)*0.2, lerp(by, ty, 0.3), 
+                bx, by);
+            this.TestDrawBezierVertex(
+                bx, by, 
+                (tx+tx1)/2, lerp(by, ty1, 0.6),
+                (tx+tx1)/2, lerp(ty1, by, 0.3),
+                tx1, ty1
+                );
+            endShape();
         }
         
         TestPoint(x, y){
