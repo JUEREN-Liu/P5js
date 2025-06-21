@@ -557,6 +557,11 @@
             strokeWeight(3);
             ellipse(lerp(rL, rR, this.faceData.pupilXoffset), lerp(bY, tY, this.faceData.pupilYoffset), pupilWidth*0.6, pupilWidth*0.6);
             ellipse(lerp(lR, lL, this.faceData.pupilXoffset), lerp(bY, tY, this.faceData.pupilYoffset), pupilWidth*0.6, pupilWidth*0.6);
+            stroke(255);
+            strokeWeight(pupilWidth*0.4);
+            let hightlightY = lerp(this.centerY, bezierPoint(inSide,lerp(inSide, tY, this.faceData.eye_inSide_CP1),tY,tY, 0.5), 0.6);
+            point(lerp(rL, rR, this.faceData.pupilXoffset)-pupilWidth*0.6, hightlightY);
+            point(lerp(lR, lL, this.faceData.pupilXoffset)-pupilWidth*0.6, hightlightY);
         }
 
         TestDrawBezierVertex(x1, y1, x2, y2, x3, y3, x4, y4){
