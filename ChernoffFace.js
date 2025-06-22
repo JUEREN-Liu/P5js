@@ -1,9 +1,10 @@
 {
     function setup() {
-    createCanvas(900, 900);
-    Texture01_Setup();
+        createCanvas(900, 900);
+        Texture01_Setup();
 
-    Texture01();
+        Texture01();
+        noLoop();
     }
 
     function Mask(){
@@ -14,6 +15,8 @@
         strokeWeight(2);
     }
 
+    let faceDatas = [];
+    let faces = [];
     function Texture01(){
         background(255);
         //clip(Mask);
@@ -22,16 +25,87 @@
         column = floor(height / size);
         //faceData = new FaceData(size+ size / 2, size + size / 2, size);
         for(let i=0; i < column; i++){
+            faceDatas[i] = [];
+            faces[i] = [];
             for(let j = 0; j < row; j++){
-                faceData = new FaceData(size * j + size / 2, size * i + size / 2, size);
+                faceDatas[i][j] = new FaceData(size * j + size / 2, size * i + size / 2, size);
                 //faceData.SetPos(size * j + size / 2, size * i + size / 2, size);
                 
                 //faceData.RandomHair();
                 //faceData.RandomEye();
-                face = new Face(faceData).DrawFace();
+                faces[i][j] = new Face(faceDatas[i][j]).DrawFace();
             }
         }
     }
+
+    function draw(){
+        let noiseLevel = width;
+        let noiseScale = 0.2;
+        
+        if(frameCount % 60 != 0)
+            return;
+        for(let i = 0; i < 5; i ++){
+            let nt = frameCount * noiseScale * (i+1) *13;
+
+            let x = map(noise(nt), 0, 1, 0, width);
+            let y = map(noise(nt + 10000), 0, 1, 0, height);
+            
+            SetReDrawPoint(round(x/size), round(y/size));
+        }
+    }
+
+    function mousePressed() {
+        let col = floor(mouseX / size);
+        let rowIdx = floor(mouseY / size);
+        SetReDrawPoint(col, rowIdx);
+    }
+
+    function SetReDrawPoint(col, rowIdx){
+        if (col >= 0 && col < row && rowIdx >= 0 && rowIdx < column) {
+            let neighbors = [];
+
+            if (rowIdx > 0) neighbors.push(faceDatas[rowIdx - 1][col]);
+            if (rowIdx < column - 1) neighbors.push(faceDatas[rowIdx + 1][col]);
+            if (col > 0) neighbors.push(faceDatas[rowIdx][col - 1]);
+            if (col < row - 1) neighbors.push(faceDatas[rowIdx][col + 1]);
+
+            let avgData = averageFaceData(neighbors);
+            if (avgData) {
+                for (let key of Object.keys(avgData)) {
+                    if (['x', 'y', 'w'].includes(key)) continue;
+                    if (typeof avgData[key] === 'number') {
+                        avgData[key] = lerp(faceDatas[rowIdx][col][key], avgData[key], 0.33);
+                    }
+                }
+            }
+            faceDatas[rowIdx][col] = new FaceData(size * col + size / 2, size * rowIdx + size / 2, size, avgData);
+            faces[rowIdx][col] = new Face(faceDatas[rowIdx][col]).ReDraw();
+        }
+    }
+
+    function averageFaceData(faceArray) {
+        let avg = {};
+        let count = faceArray.length;
+        for (let key in faceArray[0]) {
+            let sum = 0;
+            let valid = true;
+            
+            for (let i = 0; i < count; i++) {
+                
+                if (typeof faceArray[i][key] === "number") {
+                    sum += faceArray[i][key];
+                } else {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid) {
+                avg[key] = sum / count;
+            }
+        }
+        return avg;
+    }
+
 
     class FaceData{
         x = 0;
@@ -95,15 +169,26 @@
         mouseY = 0.5;
         mouseW = 0.5;
 
-        constructor(x, y, w){
+        constructor(x, y, w, data = null){
             this.x = x;
             this.y = y;
             this.w = w;
-            this.RandomFace();
-            this.RandomHair();
-            this.RandomEye();
-            this.RandomPupil();
-            this.RandomEyebrow();
+            
+            if (data) {
+                for (let key of Object.keys(data)) {
+                    if (['x', 'y', 'w'].includes(key)) continue;
+                    if (typeof data[key] === 'number') {
+                        this[key] = data[key];
+                    }
+                }
+            }
+            else{
+                this.RandomFace();
+                this.RandomHair();
+                this.RandomEye();
+                this.RandomPupil();
+                this.RandomEyebrow();
+            }
         }
 
         mapRand(base, std, min, max){
@@ -115,17 +200,6 @@
         }
 
         RandomFace(){
-            this.faceWidth = 0.5;
-            this.faceHeight = 0.9;
-            this.faceCenterY = 0.5;
-            this.headCurveX = 0.5;
-            this.headCurveY = 0.5;
-            this.foreheadY = 0.5;
-            this.earX = 0.5;
-            this.earY = 0.5;
-            this.noseY = 0.5;
-            this.mouseY = 0.5;
-            this.mouseW = 0.5;
             this.faceWidth = this.mapRand(this.faceWidth, 0.1, 0.6 , 0.8);
             this.faceCenterY = this.mapRand(this.faceCenterY, 0.3, 0.11, 0.2);
             this.headCurveX = this.mapRand(this.headCurveX, 0.25, 0.51 , 0.58);
@@ -139,11 +213,6 @@
         }
 
         RandomHair(){
-            this.hairPiece = 0.5;
-            this.hairUnitWidth = 0.5;
-            this.hairCross = 0.5;
-            this.hairFlatness = 0.5;
-            this.sideburnsY = 0.5;
             this.hairPiece = floor(this.mapRand(this.hairPiece, 0.25, 2 , 15));
             this.hairUnitWidth = this.mapRand(this.hairUnitWidth, 0.5, 0.01 , 0.2);
             this.hairCross = this.mapRand(this.hairCross, 0.3, 0.01 , 0.1);
@@ -152,27 +221,6 @@
         }
 
         RandomEye(){
-            this.eye_height_Para = 0.5;
-            this.eye_width_Para = 0.5;
-            this.eye_inSide_Para = 0.5;
-            this.eye_tPoint_Para = 0.5;
-            this.eye_tPoint1_Para = 0.3;
-            this.eye_outSide_Para = 0.5;
-            this.eye_bPoint_Para = 0.3;
-            this.eye_bPoint1_Para = 0.5;
-            this.eye_inSide_CP1 = 0.4;
-            this.eye_inSide_CP2 = 0.5;
-            this.eye_tPoint_CP1 = 0.6;
-            this.eye_tPoint_CP2 = 0.5;
-            this.eye_tPoint1_CP1 = 0.5;
-            this.eye_tPoint1_CP2 = 0.0;
-            this.eye_outSide_CP1 = 0.7;
-            this.eye_outSide_CP2 = 0.0;
-            this.eye_bPoint_CP1 = 0.5;
-            this.eye_bPoint_CP2 = 0.5;
-            this.eye_bPoint1_CP1 = 0.4;
-            this.eye_bPoint1_CP2 = 0.5;
-            this.eyelash_height = 0.5;
             this.eye_height_Para = this.mapRand(this.eye_height_Para, 0.4, 0.06 , 0.18);
             this.eye_width_Para = this.constrainRand(this.eye_width_Para, 0.2);
             this.eye_inSide_Para = this.constrainRand(this.eye_inSide_Para, 0.2);
@@ -198,12 +246,6 @@
         }
 
         RandomPupil(){
-            this.pupil_CPX = 0.6;
-            this.pupil_CPY = 0.6;
-            this.pupilXoffset = 0.5;
-            this.pupilYoffset = 0.5;
-            this.pupilW = 0.5;
-            this.pupilH = 0.5;
             this.pupil_CPX = this.constrainRand(this.pupil_CPX, 0.05);
             this.pupil_CPY = this.constrainRand(this.pupil_CPY, 0.1);
             this.pupilXoffset = this.mapRand(this.pupilXoffset, 0.4, 0.35, 0.45);
@@ -213,9 +255,6 @@
         }
 
         RandomEyebrow(){
-            this.eyebrow_W = 0.5;
-            this.eyebrow_outSide = 0.5;
-            this.eyebrow_inSide = 0.5;
             this.eyebrow_W = this.mapRand(this.eyebrow_W, 0.35, 0.25, 0.33);
             this.eyebrow_outSide = this.mapRand(this.eyebrow_outSide, 0.25, this.eyebrow_Ymin, this.eyebrow_Ymax);
             this.eyebrow_inSide = this.mapRand(this.eyebrow_inSide, 0.25, this.eyebrow_Ymin, this.eyebrow_Ymax);
@@ -248,6 +287,13 @@
             this.faceWidth = this.w * faceData.faceWidth;
             this.faceHeight = this.w * faceData.faceHeight;
             this.centerY = this.y + this.faceHeight * this.faceHeight / this.w * faceData.faceCenterY;
+        }
+
+        ReDraw(){
+            fill(255);
+            noStroke();
+            rect(this.x-this.w/2, this.y-this.w/2, this.w, this.w);
+            this.DrawFace();
         }
 
         DrawFace(){
@@ -555,13 +601,14 @@
             fill(60, 50, 50);
             stroke(30, 30, 40);
             strokeWeight(3);
-            ellipse(lerp(rL, rR, this.faceData.pupilXoffset), lerp(bY, tY, this.faceData.pupilYoffset), pupilWidth*0.6, pupilWidth*0.6);
-            ellipse(lerp(lR, lL, this.faceData.pupilXoffset), lerp(bY, tY, this.faceData.pupilYoffset), pupilWidth*0.6, pupilWidth*0.6);
+            pupilWidth*=0.6;
+            ellipse(lerp(rL, rR, this.faceData.pupilXoffset), lerp(bY, tY, this.faceData.pupilYoffset), pupilWidth, pupilWidth);
+            ellipse(lerp(lR, lL, this.faceData.pupilXoffset), lerp(bY, tY, this.faceData.pupilYoffset), pupilWidth, pupilWidth);
             stroke(255);
-            strokeWeight(pupilWidth*0.4);
+            strokeWeight(pupilWidth*0.7);
             let hightlightY = lerp(this.centerY, bezierPoint(inSide,lerp(inSide, tY, this.faceData.eye_inSide_CP1),tY,tY, 0.5), 0.6);
-            point(lerp(rL, rR, this.faceData.pupilXoffset)-pupilWidth*0.6, hightlightY);
-            point(lerp(lR, lL, this.faceData.pupilXoffset)-pupilWidth*0.6, hightlightY);
+            point(lerp(rL, rR, this.faceData.pupilXoffset)-pupilWidth, hightlightY);
+            point(lerp(lR, lL, this.faceData.pupilXoffset)-pupilWidth, hightlightY);
         }
 
         TestDrawBezierVertex(x1, y1, x2, y2, x3, y3, x4, y4){
